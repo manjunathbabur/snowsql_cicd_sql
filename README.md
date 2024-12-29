@@ -1,0 +1,1 @@
+# snowsql_cicd_sql
