@@ -14,22 +14,26 @@ pipeline {
             }
         }
 
-        stage('Setup Environment') {
+        stage('Set Up Environment') {
             steps {
-                // Ensure scripts are executable and environment is prepared
-                echo "Setting up environment for SQL execution"
+                // Log the environment and ensure SnowSQL is accessible
+                bat 'echo Setting up environment...'
+                bat 'echo Current PATH: %PATH%'
+                bat 'dir sql\\*.sql'
+                bat 'type configs\\config.env'
             }
         }
 
         stage('Execute SQL Files') {
             steps {
-                // Execute all SQL files in the 'sql' directory
+                // Execute SQL files with retry and logging
                 bat '''
-                echo "Starting SQL execution process..."
+                echo Starting SQL execution process...
                 for %%f in (sql\\*.sql) do (
-                    echo "Executing SQL file: %%f"
+                    echo Executing SQL file: %%f
                     scripts\\run_sql.bat %%f
                 )
+                echo SQL execution process completed.
                 '''
             }
         }
@@ -40,7 +44,7 @@ pipeline {
             echo 'Pipeline completed successfully!'
         }
         failure {
-            echo 'Pipeline failed. Please check the logs for errors.'
+            echo 'Pipeline failed. Please check the logs for details.'
         }
     }
 }
